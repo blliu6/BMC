@@ -15,6 +15,6 @@ def check(example: aag, k: int):  # 执行k轮
         i = i + 2
 
 
-
 if __name__ == '__main__':
     example = read_aag('./ex.aag')
+    check(example, 10)

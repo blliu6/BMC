@@ -11,9 +11,8 @@ def get_var(var, pos):
         return Not(var[pos // 2 - 1])
 
 
-def check(example: aag, k: int):  # 执行k轮
+def check(example: aag, kk: int):  # 执行k轮
     # 第一轮
-    episode = 0
     x0 = [Bool(f'x{i + 1}') for i in range(example.n)]
     # 首先非门关系
     solver = Solver()
@@ -29,15 +28,15 @@ def check(example: aag, k: int):  # 执行k轮
         solver.add(get_var(x0, item))
 
     var = [x0]
-    for k in range(10):
+    for _ in range(kk):
         if solver.check() == z3.sat:
-            print(f'k:{k}->sat')
+            print(f'k:{_}->sat')
             print(solver.model())
             break
         else:
             for item in example.output_list:
                 solver.pop()
-            var.append([Bool(f'x{i + 1 + (k + 1) * example.n}') for i in range(example.n)])
+            var.append([Bool(f'x{i + 1 + (_ + 1) * example.n}') for i in range(example.n)])
             for v, w in example.cache_list:
                 solver.add(get_var(var[-1], v) == get_var(var[-2], w))
             for i, j, k in example.and_gate_list:
@@ -46,7 +45,7 @@ def check(example: aag, k: int):  # 执行k轮
             for item in example.output_list:
                 solver.push()
                 solver.add(get_var(var[-1], item))
-            print(f'k:{k}->unsat')
+            print(f'k:{_}->unsat')
 
 
 if __name__ == '__main__':
